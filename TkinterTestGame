@@ -1,0 +1,187 @@
+import glob
+import random
+from tkinter import *
+from tkinter import Label
+from PIL import ImageTk, Image
+
+root = Tk()
+names = glob.glob('*.jpg')
+# the names of the cards
+just_names = ['{0}'.format(name) for name in names]
+names = ['"{0}"'.format(name) for name in names]
+names = sorted(names)
+
+current_card = random.choice(just_names)
+im = Image.open(current_card)
+current_card_img = ImageTk.PhotoImage(im)
+current_cardphoto = Label(image=current_card_img)
+
+next_card = random.choice(just_names)
+nim = Image.open(next_card)
+next_card_img = ImageTk.PhotoImage(nim)
+next_cardphoto = Label(image=next_card_img)
+
+current_cardphoto.grid(row=0, column=0)
+
+next_card_copy = random.choice(just_names)
+nim_copy = Image.open(next_card_copy)
+next_card_img_copy = ImageTk.PhotoImage(nim_copy)
+next_cardphoto_copy = Label(image=next_card_img_copy)
+
+
+working = False
+
+while True:
+    points = 0
+    timesClicked = 0
+
+    def userHigh():
+        global next_card
+        global current_card
+        global current_card_img
+        global points
+        global next_cardphoto
+        global current_cardphoto
+        global button_higher
+        button_higher = Button(root, text='AA HIGHER AA', command=userHigh)
+        button_higher.grid(row=0, column=1)
+        timesClicked + 1
+        if current_card[0] == next_card[0]:
+            print('same card')
+        elif current_card[0] == 'A':
+            points += 1
+            print('win')
+        elif current_card[0] == 'J' and next_card[0] == 'Q':
+            points += 1
+            print('winn')
+        elif current_card[0] == 'Q' and next_card[0] == 'K':
+            points += 1
+            print('w1n')
+        elif next_card[0] == 'A':
+            print('l0se')
+        elif current_card[0] == 'K':
+            print('NO HIGHER CARD')
+        elif current_card[:2] == '10':
+            if next_card[0] == 'J':
+                points += 1
+                print('vi10inn')
+            elif next_card[0] == 'Q':
+                points += 1
+                print('vi3inn')
+            elif next_card[0] == 'K':
+                points += 1
+                print('vi5inn')
+            elif next_card[:2] == '10':
+                print('same')
+            else:
+                print('lo0o0se')
+        elif next_card[:2] == '10':
+            firstlet = str(current_card[0])
+            if firstlet != r'J' and firstlet != r'Q':
+                points += 1
+                print('dat jjjjjjjtrue du')
+            elif current_card[:2] == '10':
+                print('same')
+            else:
+                print('losttq')
+        elif current_card[0] < next_card[0]:
+            points += 1
+            print('true')
+        else:
+            print('false')
+        print(points)
+        if working == False:
+            next_cardphoto.grid(row=0, column=1)
+        else:
+            next_cardphoto.grid(row=0, column=0)
+            next_cardphoto_copy.grid(row=0, column=1)
+
+
+
+    def userLow():
+        global next_card
+        global current_card
+        global current_card_img
+        global points
+        timesClicked + 1
+
+        if current_card[0] == next_card[0]:
+            print('same card')
+        elif current_card[0] == 'A':
+            print('losee')
+        elif current_card[0] == 'J' and next_card[0] == 'Q':
+            print('lostte')
+        elif current_card[0] == 'Q' and next_card[0] == 'K':
+            print('lostin')
+        elif next_card[0] == 'A':
+            points += 1
+            print('winn')
+        elif current_card[0] == 'K':
+            points += 1
+            print('winn')
+        elif current_card[:2] == '10':
+            if next_card[0] == 'J':
+                print('l00se')
+            elif next_card[0] == 'Q':
+                print('loos0t')
+            elif next_card[0] == 'K':
+                print('l0st')
+            elif next_card[:2] == '10':
+                print('same')
+            else:
+                points += 1
+                print('wonin')
+        elif next_card[:2] == '10':
+            firstlet = str(current_card[0])
+            if firstlet != r'J' and firstlet != r'Q':
+                print('dat wrng du')
+            elif current_card[:2] == '10':
+                print('same')
+            else:
+                points += 1
+                print('vin!')
+        elif current_card[0] < next_card[0]:
+            print('false')
+        else:
+            points += 1
+            print('true')
+        print(points)
+        if working == False:
+            next_cardphoto.grid(row=0, column=1)
+        else:
+            next_cardphoto.grid(row=0, column=0)
+            next_cardphoto_copy.grid(row=0, column=1)
+
+
+    def cardflip():
+        global current_card
+        global next_card
+        global working
+        global points
+        global button_new
+        if points > 0:
+            working = True
+            current_card = next_card
+            next_card = next_card_copy
+            next_cardphoto.grid(row=0, column=0)
+
+            if timesClicked == 2:
+                current_card = next_card
+                next_card = next_card_copy
+                next_cardphoto.grid(row=0, column=0)
+
+        else:
+            button_new = Button(root, text='flip a new card', command=cardflip, state=DISABLED)
+
+
+
+    button_higher = Button(root, text='AA HIGHER AA', command=userHigh)
+    button_lower = Button(root, text='VV lower VV', command=userLow)
+    button_new = Button(root, text='next card', command=cardflip)
+
+    button_higher.grid(row=0, column=1)
+
+    button_lower.grid(row=0, column=0)
+    button_new.grid(row=0, column=3)
+
+    root.mainloop()
